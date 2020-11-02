@@ -1,0 +1,143 @@
+import 'package:flutter/material.dart';
+​
+void main() => runApp(MyApp());
+​
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp( title: 'Flutter Demo',
+       
+      theme: new ThemeData(
+        primarySwatch: Colors.purple,
+    
+     ),
+      home: MyCalculator(),//เรียกใช้ class 
+     
+    );
+  }
+}
+​
+class MyCalculator extends StatefulWidget {
+  @override
+  _MyCalculatorState createState() => _MyCalculatorState();
+}
+​
+class _MyCalculatorState extends State<MyCalculator> {
+  String result = "0";//เป็นที่ใช้แสดงค่าต่างๆ ในหน้าจอ
+  String resultx = "0";// เป็นตัวเก็บค่าผลลัพธ์การทำงานที่number1กับnumber2ที่รับมา
+​
+  String operand = "";
+  //เป็นตัวเก็บฟังชั้นที่จะใช้งาน ( + , - , x , /)
+​
+  double number1 = 0;//เป็นตัวเก็บเลยตัวที่ 1 ที่กด
+  double number2 = 0;//เป็นตัวเก็บเลยตัวที่ 2 ที่กด
+​
+  buttonpress(String value) {
+    if (value == "C") { //ที่ส่งมาเป็น "C" กำหนดให้ทุกค่า = 0
+      resultx = "0";
+      operand = "";
+      number1 = 0;
+      number2 = 0;
+    } else if (value == "+" || value == "-" || value == "x" || value == "/") {// เช็ก value ที่ส่งมาเป็น + - x / เพื่อเข้าทำงานในเงื่อนไขนั้น
+      number1 = double.parse(result);
+      operand = value;
+      resultx = "0";
+    } else if (value == "=") { // ถ้ากดเครื่องหมาย = จะเป็นการเก็บค่าตัวที่ 2
+      number2 = double.parse(result);
+​
+      if (operand == "+") { // ถ้ากดเครื่องหมาย + จะเป็นการนำค่า 1 และ 2 มาบวกกัน
+        resultx = (number1 + number2).toString();
+      }
+      if (operand == "-") {// ถ้ากดเครื่องหมาย - จะเป็นการนำค่า 1 และ 2 มาลบกัน
+        resultx = (number1 - number2).toString();
+      }
+      if (operand == "x") { // ถ้ากดเครื่องหมาย x จะเป็นการนำค่า 1 และ 2 มาคูณกัน
+        resultx = (number1 * number2).toString();
+      }
+      if (operand == "/") {// ถ้ากดเครื่องหมาย / จะเป็นการนำค่า 1 และ 2 มาหารกัน
+        resultx = (number1 / number2).toString();
+       
+      }
+​
+      number1 = 0;
+      number2 = 0;
+      operand = "";
+    } else {
+      resultx = resultx + value;
+    }
+​
+    setState(() {
+       
+      result = double.parse(resultx).toStringAsFixed(0);// เป็นคัวส่งค่าจาก resultx ที่คำนวณเสร็จแล้วไปยัง result ที่แสดง
+      if(result=="Infinity"){
+        //เป็นตัวกำหนดหากเกินค่าที่มากเกินไปให้ขึ้น error 
+          result="Error";
+        }
+    
+    });
+  }
+​
+  Widget myButton(String value) {// เป็นฟังชั่นปุ่มกดที่เรียกใช้งานใน body
+    return Expanded(
+        child: MaterialButton(
+      child: Text(value,
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+      padding: EdgeInsets.all(40),
+      onPressed: () => buttonpress(value),// ตัวเรียกใช้ funcion buttonpress โดยส่งค่า vakue ไป
+      color: Colors.pink,
+      textColor: Colors.black,
+    ));
+  }
+​
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Calculator By Sudarat choothong 6130613019"),
+        
+      ),
+      body: Container(
+          child: Column(children: [
+        Expanded(
+          child: Divider(),
+          // เป็นตัวแบ่งช่องว่างข้างบน result
+        ),
+            
+        Container(//ตัวแสดงค่าของผลลัพธ์ละกำหนดจุดที่result vp^j
+            alignment: Alignment.centerRight,
+            padding: new EdgeInsets.symmetric(vertical: 30, horizontal: 50),
+            child: Text(
+              result,
+              style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
+              
+            )),
+        Column(children: [
+          Row(children: [
+            myButton("7"),//ปุ่มเลข7
+            myButton("8"),//ปุ่มเลข8
+            myButton("9"),//ปุ่มเลข9
+            myButton("+"),//ปุ่มเครื่องหมาย+
+          ]),
+          Row(children: [
+            myButton("4"),//ปุ่มเลข4
+            myButton("5"),//ปุ่ม5
+            myButton("6"),//ปุ่ม6
+            myButton("-"),//ปุ่มเครื่องหมายลบ-
+          ]),
+          Row(children: [
+            myButton("1"),//ปุ่มเลข1
+            myButton("2"),//ปุ่มเลข2
+            myButton("3"),//ปุ่มเลข3
+            myButton("x"),//ปุ่มเครื่องหมายx
+          ]),
+          Row(children: [
+            myButton("C"),//ปุ่มc
+            myButton("0"),//ปุ่ม0
+            myButton("="),//ปุ่ม=
+            myButton("/"),//ปุ่ม/
+          ]),
+        ])
+      ])),
+    );
+  }
+}
